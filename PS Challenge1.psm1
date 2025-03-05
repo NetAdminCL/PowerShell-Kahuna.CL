@@ -4,9 +4,10 @@ $OUName = "London"
 $DomainDN = "DC=Adatum,DC=com" 
 $OUPath = "OU=$OUName,$DomainDN" 
 $GroupName = “London Users”
+$LondonUser = @()
 
-ForEach ($User in (Get-ADUser -Filter {City -eq "London"})) 
+ForEach ($LondonUser in (Get-ADUser -Filter {City -eq "London"})) 
 { 
-    Move-ADObject -Identity $User -TargetPath $OUPath 
-    Add-ADGroupMember -Identity $GroupName -Members $User 
+    Move-ADObject -Identity $LondonUser -TargetPath $OUPath 
+    Add-ADGroupMember -Identity $GroupName -Members $LondonUser 
 }
