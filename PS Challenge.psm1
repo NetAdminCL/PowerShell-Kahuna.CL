@@ -7,7 +7,7 @@ $GroupName = “London Users”
 
 If (-not (Get-ADGroup -Filter {Name -eq $GroupName} -SearchBase $OUPath))
 { 
-    New-ADGroup - Name $GroupName -GroupScope Global -GroupCategory Security -Path $OUPath
+    New-ADGroup -Name $GroupName -GroupScope Global -GroupCategory Security -Path $OUPath
     Write-Output "Global Security Group '$GroupName' has been created in '$OUName'."
 }
 Else
