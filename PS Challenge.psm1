@@ -1,16 +1,12 @@
-#Creates a global security group "London Users" if it doesn't exist, or says it already exists
+#Check for users with "London" city and move them to "London" OU and "London Users" group
 
 $OUName = "London" 
 $DomainDN = "DC=Adatum,DC=com" 
 $OUPath = "OU=$OUName,$DomainDN" 
 $GroupName = “London Users”
 
-If (-not (Get-ADGroup -Filter {Name -eq $GroupName} -SearchBase $OUPath))
+ForEach ($User in (Get-ADUser -Filter {City -eq "London"})) 
 { 
-    New-ADGroup -Name $GroupName -GroupScope Global -GroupCategory Security -Path $OUPath
-    Write-Output "Global Security Group '$GroupName' has been created in '$OUName'."
-}
-Else
-{
-    Write-Output "'$GroupName' already exists in 'OUPath'."
+    Move-ADObject -Identity $User -TargetPath $OUPath 
+    Add-ADGroupMember -Identity $GroupName -Members $User 
 }
