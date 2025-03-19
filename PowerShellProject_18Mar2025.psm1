@@ -1,23 +1,25 @@
 #Script That queries all servers on the network
 $Servers = Get-ADComputer -Filter * | Select-Object -ExpandProperty Name
 
-$ErrorLog = "C:\Path\To\ErrorLog.csv"
-$AdminEmails = "admin1@example.com,admin2@example.com"
-$FromEmail = "monitor@example.com"
-$SMTPServer = "smtp.example.com"
-
 # Query Active Directory for IT department administrators
 $AdminEmails = Get-ADUser -Filter { Department -eq "IT" -and Title -like "*Admin*" } | Select-Object -ExpandProperty EmailAddress -ErrorAction SilentlyContinue
 $AdminEmails = $AdminEmails -join ","
 
 #Creates and saves the error log file
+$Date = Get-Date -Format "yyyyMMdd"
+$ErrorLog = "\\Server\Share\Server Logs\ErrorLog_$Date.csv"
 if (-Not (Test-Path $ErrorLog)) {
     New-Item -Path $ErrorLog -ItemType File -Force
     Add-Content -Path $ErrorLog -Value "Time,Server,Error"
 }
 
+# Query the network for the email server and specify the email for notifications
+$SMTPServer = (Get-ADComputer -Filter { Name -like "*mail*" } | Select-Object -ExpandProperty Name | Select-Object -First 1) + "@adatum.com"
+$FromEmail = christian.lasdulce@adatum.com
+
 #Loops through the servers and checks if they are up or down
 #If the server is down, it logs the error and sends an email to the administrators
+
 while ($true) {
     foreach ($Server in $Servers) {
         try {
