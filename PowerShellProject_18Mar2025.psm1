@@ -4,6 +4,9 @@ param
     [string]$ErrorLogPath = "C:\PowerShell Automatic Script\ServerCheck"
 )
 
+#Checks the Active Directory for any Server
+$Servers = Get-ADComputer -Filter {OperatingSystem -like "*Server*" -and Enabled -eq $true} -Property Name | Select-Object -ExpandProperty Name
+
 #Checks to see if the "Error Log" document for the day exists and if it doesn not, creates one
 $Date = Get-Date -Format "yyyyMMdd"
 $ErrorLog = Join-Path -Path $ErrorLogPath -ChildPath "ErrorLog_$Date.xlsx"
@@ -23,7 +26,7 @@ if (-Not (Test-Path $ErrorLog))
 }
 
 # Function to log errors to the Excel file
-function Log-ErrorToExcel 
+function Log-ErrorToExcel
 {
     param 
     (
