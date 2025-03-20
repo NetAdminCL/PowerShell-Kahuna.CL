@@ -69,7 +69,7 @@ else
 
 }
 
-# Loops through the servers and checks if they are up or down, then emails the IT department if a server is down
+# Loops through the servers and checks if they are up or down, then puts the error into the log
 foreach ($Server in $Servers) 
 {
     try 
